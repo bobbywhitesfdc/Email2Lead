@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailServicesFunction xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apexClass>Email2LeadService</apexClass>
+    <attachmentOption>None</attachmentOption>
+    <authenticationFailureAction>Bounce</authenticationFailureAction>
+    <authorizationFailureAction>Bounce</authorizationFailureAction>
+    <emailServicesAddresses>
+        <authorizedSenders>bobby.white@boltsolutions.net,bobbywhitenc@yahoo.com</authorizedSenders>
+        <developerName>LeadMailbox</developerName>
+        <isActive>true</isActive>
+        <localPart>email2lead</localPart>
+        <runAsUser>test-k5loqumz8wtb@example.com</runAsUser>
+    </emailServicesAddresses>
+    <functionInactiveAction>Bounce</functionInactiveAction>
+    <functionName>Email2Lead</functionName>
+    <isActive>true</isActive>
+    <isAuthenticationRequired>false</isAuthenticationRequired>
+    <isErrorRoutingEnabled>false</isErrorRoutingEnabled>
+    <isTextAttachmentsAsBinary>false</isTextAttachmentsAsBinary>
+    <isTlsRequired>false</isTlsRequired>
+    <overLimitAction>Requeue</overLimitAction>
+</EmailServicesFunction>
