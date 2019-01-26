@@ -8,6 +8,30 @@ public class Email2LeadService_Test {
     public static final String TEXT_BODY = 'Text-Please quote me 50 year old male, diabeters, 500k coverage-Text';
     public static final String ERROR_SENDER = 'brokeragency1';
 
+    static testMethod void testSimpleName() {
+        Lead myLead = new Lead();
+        Email2LeadService service = new Email2LeadService();
+        service.setLeadNameFromEmailAddress(myLead, 'firstpart@example.com');
+        System.AssertEquals(myLead.FirstName,'firstpart');
+        System.AssertEquals(myLead.LastName,'firstpart');
+        System.AssertEquals(myLead.company,'example.com');
+    }
+    static testMethod void testGoodDotName() {
+        Lead myLead = new Lead();
+        Email2LeadService service = new Email2LeadService();
+        service.setLeadNameFromEmailAddress(myLead, 'first.last@example.com');
+        System.AssertEquals(myLead.FirstName,'first');
+        System.AssertEquals(myLead.LastName,'last');
+        System.AssertEquals(myLead.company,'example.com');
+    }
+    static testMethod void testComplexDotName() {
+        Lead myLead = new Lead();
+        Email2LeadService service = new Email2LeadService();
+        service.setLeadNameFromEmailAddress(myLead, 'first.last.other@example.com');
+        System.AssertEquals(myLead.FirstName,'first');
+        System.AssertEquals(myLead.LastName,'last');
+        System.AssertEquals(myLead.company,'example.com');
+    }
     /**
      * Test the main service interface with an HTML body only
      * Sender, Subject, and other expected fields are supplied
@@ -17,7 +41,7 @@ public class Email2LeadService_Test {
    static testMethod void testHandleBasicE2EWithHtmlBody() {
 
       // Create a new email, envelope object and Attachment
-       Messaging.InboundEmail email = createEmail(DEFAULT_SUBJECT,HTML_BODY,null);
+      Messaging.InboundEmail email = createEmail(DEFAULT_SUBJECT,HTML_BODY,null);
       Messaging.InboundEnvelope env = createEnvelope(DEFAULT_SENDER,DEFAULT_MAILBOX);
 
 
@@ -84,7 +108,7 @@ public class Email2LeadService_Test {
    static testMethod void testHandleNoSubject() {
 
       // Create a new email, envelope object and Attachment
-      Messaging.InboundEmail email = createEmail(null,HTML_BODY,TEXT_BODY);
+      Messaging.InboundEmail email = createEmail('',HTML_BODY,TEXT_BODY);
       Messaging.InboundEnvelope env = createEnvelope(DEFAULT_SENDER,DEFAULT_MAILBOX);
 
 
@@ -95,7 +119,7 @@ public class Email2LeadService_Test {
        
       System.Assert(result.success,MSG_EXPECTED_SUCCESS);
        
-      validateLead(null,HTML_BODY);
+      validateLead('',HTML_BODY);
 
    }
    
@@ -105,10 +129,10 @@ public class Email2LeadService_Test {
      * Sender, Subject, and other expected fields are supplied along with attachment.
      * 
      **/ 
-   static testMethod void testHandleBasicE2EWithHtmlBodyNegativeTesting() {
+   static testMethod void testBodyNegativeTesting() {
 
       // Create a new email, envelope object and Attachment
-      Messaging.InboundEmail email = createEmail(DEFAULT_SUBJECT,HTML_BODY,null);
+      Messaging.InboundEmail email = createEmail(DEFAULT_SUBJECT,null,null);
       Messaging.InboundEnvelope env = createEnvelope(DEFAULT_SENDER,DEFAULT_MAILBOX);
 
 
@@ -117,7 +141,8 @@ public class Email2LeadService_Test {
       Messaging.InboundEmailResult result = emailServiceObj.handleInboundEmail(email, env);
       
       //Assertion for the negative testing
-      System.assertEquals(result.success, false);
+      System.assert(result.success);
+      validateLead(DEFAULT_SUBJECT,HTML_BODY);
        
    }
     
@@ -158,9 +183,8 @@ public class Email2LeadService_Test {
 	       System.Assert(testLeads.size() == 1, 'Expected exactly 1 Lead, got:' + testLeads.size());
 	       
 	       Lead theLead = testLeads[0];
-	       System.AssertEquals(theLead.Status,'New','Expected status of NEW');
 	       System.AssertEquals(theLead.LeadSource,'Web','Source must be set');
-	       System.AssertEquals(theLead.name,'Name must be set');
+	       System.Assert(theLead.name != null,'Name must be set');
 	       System.AssertEquals(theLead.description,expectedBody,'Description should match body');
 	       
 	   } catch (System.DMLException dme)  {

@@ -54,24 +54,34 @@ global with sharing class Email2LeadService implements Messaging.InboundEmailHan
             theLead.email = envelope.fromAddress;
             setLeadNameFromEmailAddress(theLead,envelope.fromAddress);
             //theLead.???? = envelope.toAddress;
+            
+            if (theLead.description == null) {
+                throw new ServiceException('Empty email body');                
+            }
+            
             insert theLead;
             return true;
         } catch(Exception e) {
+            System.Debug('Create lead failed: ' + e.getMessage());
             return false;
-        }
-        
+        }  
     }
     
     /**
      * Attempt to Split the Email Address up into a meaningful name
-     **/ 
+     **/
+    @TestVisible
     private void setLeadNameFromEmailAddress(Lead myLead, String emailAddress) {
     
         List<String> nameParts = emailAddress.split('@');
-        List<String> subParts = nameParts[0].split('.');   // if we get a dot to separate name parts
+        List<String> subParts = nameParts[0].split('\\.');   // if we get a dot to separate name parts
         
         myLead.firstname = subParts[0];
-        myLead.lastname = subParts[subParts.size() > 1 ? 1 : 0]; 
+        myLead.lastname = subParts[subParts.size() > 1 ? 1 : 0];
+        myLead.company = nameParts.size() > 1 ? nameParts[1] : 'Unknown';
+    }
+    
+    public class ServiceException extends Exception {
     }
     
  
