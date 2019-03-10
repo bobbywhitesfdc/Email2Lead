@@ -4,10 +4,15 @@ public class Email2LeadService_Test {
     public static final String DEFAULT_SUBJECT = 'Email Quote Request';
     public static final String DEFAULT_SENDER = 'broker@agency1.com';
     public static final String DEFAULT_MAILBOX = 'email2lead@example.com';
-    public static final String HTML_BODY = '<em>Please</em> quote me 50 year old male, diabetes, 500k coverage';
-    public static final String TEXT_BODY = 'Text-Please quote me 50 year old male, diabeters, 500k coverage-Text';
+    public static final String HTML_BODY = '<em>Please</em> quote me <p>50 year old male, diabetes, 500k coverage';
+    public static final String TEXT_BODY = 'Please quote me 50 year old male, diabetes, 500k coverage';
     public static final String ERROR_SENDER = 'brokeragency1';
 
+    static testMethod void testConvertHTML() {
+        Email2LeadService service = new Email2LeadService();
+        String converted = service.convertHTMLToPlainText('<p>This is <em>html</em>');
+        System.AssertEquals(converted,'This is html');
+    }
     static testMethod void testSimpleName() {
         Lead myLead = new Lead();
         Email2LeadService service = new Email2LeadService();
@@ -51,7 +56,7 @@ public class Email2LeadService_Test {
        
       System.Assert(result.success,MSG_EXPECTED_SUCCESS);
        
-      validateLead(DEFAULT_SUBJECT,HTML_BODY);  
+      validateLead(DEFAULT_SUBJECT,TEXT_BODY);  
 
    }
     
@@ -96,7 +101,7 @@ public class Email2LeadService_Test {
        
       System.Assert(result.success,MSG_EXPECTED_SUCCESS);
        
-      validateLead(DEFAULT_SUBJECT,HTML_BODY);
+      validateLead(DEFAULT_SUBJECT,TEXT_BODY);
 
    }
     
@@ -119,7 +124,7 @@ public class Email2LeadService_Test {
        
       System.Assert(result.success,MSG_EXPECTED_SUCCESS);
        
-      validateLead('',HTML_BODY);
+      validateLead('',TEXT_BODY);
 
    }
    
@@ -142,7 +147,7 @@ public class Email2LeadService_Test {
       
       //Assertion for the negative testing
       System.assert(result.success);
-      validateLead(DEFAULT_SUBJECT,HTML_BODY);
+      validateLead(DEFAULT_SUBJECT,'');
        
    }
     
@@ -183,9 +188,9 @@ public class Email2LeadService_Test {
 	       System.Assert(testLeads.size() == 1, 'Expected exactly 1 Lead, got:' + testLeads.size());
 	       
 	       Lead theLead = testLeads[0];
-	       System.AssertEquals(theLead.LeadSource,'Web','Source must be set');
+	       System.AssertEquals('Web',theLead.LeadSource,'Source must be set');
 	       System.Assert(theLead.name != null,'Name must be set');
-	       System.AssertEquals(theLead.description,expectedBody,'Description should match body');
+	       System.AssertEquals(expectedBody,theLead.description,'Description should match body');
 	       
 	   } catch (System.DMLException dme)  {
 	       System.Assert(false,'Exception caught while validating Leads'+dme.getMessage());

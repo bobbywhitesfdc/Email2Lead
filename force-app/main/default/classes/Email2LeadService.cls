@@ -49,9 +49,17 @@ global with sharing class Email2LeadService implements Messaging.InboundEmailHan
         Lead theLead = new Lead();
 
         theLead.LeadSource = 'Web';
-        // Plain Text version
-        theLead.description = email.plainTextBody == null ? email.htmlBody : email.plainTextBody ;
-        // Formatted original email body
+
+        // Plain Text version by default, HTML if plain is missing
+        if (email.plainTextBody != null) {
+            theLead.description = email.plainTextBody; 
+        } else if (email.htmlBody != null) {
+            theLead.description = convertHTMLToPlainText(email.htmlBody);
+        } else {
+            theLead.description='';
+        }
+
+
         theLead.email = envelope.fromAddress;
         setLeadNameFromEmailAddress(theLead,envelope.fromAddress);
             
@@ -131,6 +139,11 @@ global with sharing class Email2LeadService implements Messaging.InboundEmailHan
     	}
 
 
+    }
+    @TestVisible
+    private String convertHTMLToPlainText(String htmlText) {
+        String strippedText = (htmlText == null) ? null : htmlText.replaceAll('(?s)<[^>]*>(\\s*<[^>]*>)*', '');
+        return strippedText;
     }
     
     public class ServiceException extends Exception {

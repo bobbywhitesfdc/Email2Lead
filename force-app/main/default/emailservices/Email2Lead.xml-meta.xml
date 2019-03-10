@@ -5,11 +5,11 @@
     <authenticationFailureAction>Bounce</authenticationFailureAction>
     <authorizationFailureAction>Bounce</authorizationFailureAction>
     <emailServicesAddresses>
-        <authorizedSenders>bobby.white@boltsolutions.net,bobbywhitenc@yahoo.com</authorizedSenders>
+        <authorizedSenders>bobby.white@boltsolutions.net,bobbywhitenc@yahoo.com,bobbywhitenc@icloud.com</authorizedSenders>
         <developerName>LeadMailbox</developerName>
         <isActive>true</isActive>
         <localPart>email2lead</localPart>
-        <runAsUser>test-k5loqumz8wtb@example.com</runAsUser>
+        <runAsUser>test-al2czna1upwh@example.com</runAsUser>
     </emailServicesAddresses>
     <functionInactiveAction>Bounce</functionInactiveAction>
     <functionName>Email2Lead</functionName>

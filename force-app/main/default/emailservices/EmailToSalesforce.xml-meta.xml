@@ -7,7 +7,7 @@
     <functionInactiveAction>Bounce</functionInactiveAction>
     <functionName>EmailToSalesforce</functionName>
     <isActive>true</isActive>
-    <isAuthenticationRequired>true</isAuthenticationRequired>
+    <isAuthenticationRequired>false</isAuthenticationRequired>
     <isErrorRoutingEnabled>false</isErrorRoutingEnabled>
     <isTextAttachmentsAsBinary>false</isTextAttachmentsAsBinary>
     <isTlsRequired>false</isTlsRequired>
