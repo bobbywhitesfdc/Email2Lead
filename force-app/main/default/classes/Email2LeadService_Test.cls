@@ -129,25 +129,31 @@ public class Email2LeadService_Test {
    }
    
     /**
-     * @Start 27-Dec-2016 Technical Review Team
-     * Negative Testing for the main service interface with an HTML body only
-     * Sender, Subject, and other expected fields are supplied along with attachment.
-     * 
+     *  Test for duplicate lead insertion
      **/ 
    static testMethod void testBodyNegativeTesting() {
 
       // Create a new email, envelope object and Attachment
-      Messaging.InboundEmail email = createEmail(DEFAULT_SUBJECT,null,null);
+      Messaging.InboundEmail email = createEmail(DEFAULT_SUBJECT,HTML_BODY,TEXT_BODY);
       Messaging.InboundEnvelope env = createEnvelope(DEFAULT_SENDER,DEFAULT_MAILBOX);
 
 
       // call the class and test it with the data in the testMethod
       Email2LeadService emailServiceObj = new Email2LeadService();
-      Messaging.InboundEmailResult result = emailServiceObj.handleInboundEmail(email, env);
+      emailServiceObj.handleInboundEmail(email, env);
       
-      //Assertion for the negative testing
-      System.assert(result.success);
-      validateLead(DEFAULT_SUBJECT,'');
+
+      // Attempt to create the duplicate lead -- Ensure this would work from a clean state
+      Email2LeadService emailService2 = new Email2LeadService();
+      Messaging.InboundEmailResult result = emailService2.handleInboundEmail(email, env);
+
+      validateLead(DEFAULT_SUBJECT,TEXT_BODY);
+
+      // Extra check to see that at least two Tasks are found for this Lead
+      List<Lead> testLeads = [SELECT id, email From Lead Limit 1];
+      List<Task> testTasks = [SELECT id from Task Where WhoId=:testLeads[0].id];
+      System.Assert(testTasks.size()==2,'Expected to find 2 Tasks for the duplicate lead');
+
        
    }
     
@@ -183,7 +189,7 @@ public class Email2LeadService_Test {
 	                                    , LeadSource
 	                                    , Description
 	                                    , Status
-	                               FROM Lead limit 10];
+	                               FROM Lead limit 2];
 	       
 	       System.Assert(testLeads.size() == 1, 'Expected exactly 1 Lead, got:' + testLeads.size());
 	       

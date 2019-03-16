@@ -1,0 +1,42 @@
+=== Test Results
+TEST NAME                                              OUTCOME  MESSAGE                                                                                            RUNTIME (MS)
+─────────────────────────────────────────────────────  ───────  ─────────────────────────────────────────────────────────────────────────────────────────────────  ────────────
+Email2LeadService_Test.testBodyNegativeTesting         Fail     System.AssertException: Assertion Failed: Description should match body: Expected: , Actual: null  2161
+                                                                Class.Email2LeadService_Test.validateLead: line 193, column 1
+                                                                Class.Email2LeadService_Test.testBodyNegativeTesting: line 150, column 1
+Email2LeadService_Test.testComplexDotName              Pass                                                                                                        7
+Email2LeadService_Test.testConvertHTML                 Pass                                                                                                        4
+Email2LeadService_Test.testGoodDotName                 Pass                                                                                                        5
+Email2LeadService_Test.testHandleBasicE2EWith2Body     Pass                                                                                                        127
+Email2LeadService_Test.testHandleBasicE2EWithHtmlBody  Pass                                                                                                        120
+Email2LeadService_Test.testHandleBasicE2EWithTextBody  Pass                                                                                                        84
+Email2LeadService_Test.testHandleNoSubject             Pass                                                                                                        75
+Email2LeadService_Test.testSimpleName                  Pass                                                                                                        5
+
+=== Failures
+FULLNAME                                        MESSAGE
+──────────────────────────────────────────────  ────────────────────────────────────────────────────────────────────────────────────────────────────────
+Email2LeadService_Test.testBodyNegativeTesting  System.AssertException: Assertion Failed: Description should match body: Expected: , Actual: null
+                                                /Users/bobbywhitenc/projects/EmailToLead/force-app/main/default/classes/Email2LeadService_Test.cls:193:1
+                                                /Users/bobbywhitenc/projects/EmailToLead/force-app/main/default/classes/Email2LeadService_Test.cls:150:1
+
+=== Test Summary
+NAME                 VALUE
+───────────────────  ─────────────────────────────────────────────────────────────
+Outcome              Failed
+Tests Ran            9
+Passing              8
+Failing              1
+Skipped              0
+Pass Rate            89%
+Fail Rate            11%
+Test Start Time      Mar 10, 2019 10:13 AM
+Test Execution Time  2588 ms
+Test Total Time      2588 ms
+Command Time         3422 ms
+Hostname             https://inspiration-java-4153-dev-ed.cs68.my.salesforce.com/
+Org Id               00D1D00000012hMUAQ
+Username             test-al2czna1upwh@example.com
+Test Run Id          7071D00000YRRBB
+User Id              0051D000001QKvVQAW
+

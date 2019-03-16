@@ -18,6 +18,8 @@
 **/
 
 global with sharing class Email2LeadService implements Messaging.InboundEmailHandler {
+    public static final String EMPTY_BODY=' ';
+    public static final String DUPLICATE_FOUND='DUPLICATES_DETECTED';
     
     /**
     * Method Name: handleInboundEmail
@@ -53,26 +55,22 @@ global with sharing class Email2LeadService implements Messaging.InboundEmailHan
         // Plain Text version by default, HTML if plain is missing
         if (email.plainTextBody != null) {
             theLead.description = email.plainTextBody; 
-        } else if (email.htmlBody != null) {
-            theLead.description = convertHTMLToPlainText(email.htmlBody);
-        } else {
-            theLead.description='';
+        } else  {
+        	// Special handling if no Plaintext body is present
+            theLead.description = email.htmlBody == null ? EMPTY_BODY : convertHTMLToPlainText(email.htmlBody);
         }
-
 
         theLead.email = envelope.fromAddress;
         setLeadNameFromEmailAddress(theLead,envelope.fromAddress);
-            
-        if (theLead.description == null) {
-            return false;               
-        }
-
 
         try {     
             insert theLead;
         } catch(DMLException dme) {
-        	if (dme.getMessage().contains('DUPLICATES_DETECTED')) {
-        		// Find the existing lead and use it instead
+        	if (dme.getMessage().contains(DUPLICATE_FOUND)) {
+                Lead theOriginalLead=null;
+
+        		// ASSUMES that the Duplicate Rule is based on in part on Email address
+        		// Find the existing lead by Email Address and use it instead
         		List<Lead> matches = [SELECT id, email, firstName, lastName 
         				     From Lead
         				    Where email = :envelope.fromAddress
@@ -80,8 +78,11 @@ global with sharing class Email2LeadService implements Messaging.InboundEmailHan
         	    if (matches.isEmpty()) {
         	    	return false;
         	    } else {
-        	    	theLead = matches[0]; // use the first match
+        	    	theOriginalLead = matches[0]; // use the first match
+                    createTask(theOriginalLead,email,envelope);
+                    return true;
         	    }
+
         	} else {
         		return false;
         	}
@@ -131,6 +132,7 @@ global with sharing class Email2LeadService implements Messaging.InboundEmailHan
 			t1.subject= email.subject;
 			t1.taskSubtype='Email';
 			t1.whoId=theLead.id;
+			t1.status='Completed';
 			insert t1;
 
     	} catch (Exception e) {
